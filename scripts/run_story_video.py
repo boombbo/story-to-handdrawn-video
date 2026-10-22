@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -96,6 +97,8 @@ def require_project(project: Path) -> None:
 
 
 def run(command: list[str], project: Path) -> None:
+    # Windows: npm/npx are .cmd shims that CreateProcess can't find by bare name
+    command = [shutil.which(command[0]) or command[0], *command[1:]]
     subprocess.run(command, cwd=project, check=True)
 
 
